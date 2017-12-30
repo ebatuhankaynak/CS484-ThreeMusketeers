@@ -1,0 +1,34 @@
+function [edgeCostMatrix, commonBorderMatrix] = calc_edge_cost(img, labels) 
+    n = size(unique(labels),1);
+    edgeCostMatrix = zeros(n);
+    commonBorderMatrix = zeros(n);
+    
+    for i=1:n
+        for j=1:n
+            first_sp = labels == i;
+        	second_sp = labels == j;
+            
+            % first, calculate the common boundary
+            first_sp_boundary = edge(first_sp,'canny');
+            second_sp_boundary = edge(second_sp,'canny');
+            total = first_sp_boundary|second_sp_boundary;
+            no_inner = edge(first_sp | second_sp,'canny');
+            common_boundary = total - no_inner;
+            %figure; imshow(total);
+            %figure; imshow(common_boundary);
+            commonBorderMatrix(i,j) = sum(sum(common_boundary));
+
+            % second, calculate edge responses
+            
+            
+            if commonBorderMatrix(i,j) == 0
+                edgeCostMatrix(i,j) = 0 ;
+            else
+                edge_cost = edge(img, 'canny');
+                sum_edge_cost = sum(sum(edge_cost & common_boundary));
+                edgeCostMatrix(i,j) = sum(sum(edge_cost & common_boundary))/commonBorderMatrix(i,j);
+            end
+       
+        end
+    end
+end

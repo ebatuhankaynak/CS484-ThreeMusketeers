@@ -18,7 +18,7 @@ ctDistances = ct_dists(img, labels);
 graphDistanceMatrix = neighborhoodGraph(labels);
 
 %Calculate the edge distance (d[e]) between each superpixel
-% edgeDistanceMatrix, commonBorderMatrix  = edge_costs(img, labels);
+[edgeDistanceMatrix, commonBorderMatrix]  = edge_costs(img, labels);
 
 m = 1; n = 2;
 %Find dct's between each superpixel in the sets S[m] and S[n]
@@ -33,7 +33,7 @@ basicDistances = zeros(1, length(superPixelsInSetM) * length(superPixelsInSetN))
 graphDistances = zeros(1, length(superPixelsInSetM) * length(superPixelsInSetN));
 edgeCosts = zeros(1, length(superPixelsInSetM) * length(superPixelsInSetN));
 commonBorders = zeros(1, length(superPixelsInSetM) * length(superPixelsInSetN));
-% temp = (commonBorderMatrix .* edgeDistanceMatrix);
+temp = (commonBorderMatrix .* edgeDistanceMatrix);
 %Get all pairwise distances
 count = 1;
 for x = 1 : length(superPixelsInSetM)
@@ -42,8 +42,8 @@ for x = 1 : length(superPixelsInSetM)
        j = superPixelsInSetN(y);
        basicDistances(count) = ctDistances(i, j);
        graphDistances(count) = graphDistanceMatrix(i, j);
-%        edgeCosts(count) = temp(i, j);
-%        commonBorders(count) = commonBorderMatrix(i, j);
+       edgeCosts(count) = temp(i, j);
+       commonBorders(count) = commonBorderMatrix(i, j);
        count = count + 1;
     end
 end
@@ -56,13 +56,13 @@ Dmax = max(basicDistances);
 
 Dg = min(graphDistances);
 
-% if (sum(commonBorders) ~= 0)
-%     De = sum(edgeCosts) / sum(commonBorders);
-% else
-%     De = 0;
-% end
+if (sum(commonBorders) ~= 0)
+    De = sum(edgeCosts) / sum(commonBorders);
+else
+    De = 0;
+end
 
-% DL = Dmax + De + Dg;
+DL = Dmax + De + Dg;
 DH = Dmin + (b * Dg);
 
 rm = 0;
