@@ -1,0 +1,19 @@
+%Read image
+img = imread('corgi.jpg');
+[height, width, ~] = size(img);
+
+%Read precomputed SLIC0 .dat file
+labels = read_slic('corgi.dat', height, width);
+
+ctDistances = ct_dists(img, label);
+
+
+
+% %Compute the distance of color and texture histograms between superpixel
+% %sets S[i] and S[j]
+% i = 1; j = 2;
+% dct = basic_distance(i, j, colorHistsOfSuperpixels, textureHistsOfSuperpixels)
+% i = 57; j = 178;
+% dct = basic_distance(i, j, colorHistsOfSuperpixels, textureHistsOfSuperpixels)
+% i = 1; j = 199;
+% dct = basic_distance(i, j, colorHistsOfSuperpixels, textureHistsOfSuperpixels)
