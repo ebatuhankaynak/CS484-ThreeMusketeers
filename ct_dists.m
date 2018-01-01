@@ -32,7 +32,7 @@ for i = 1 : nLabels
         elseif (ctDistances(j, i) ~= 0)
             ctDistances(i, j) = ctDistances(j, i);
         else
-            ctDistances(i, j) = basic_distance(i, j, ...
+            ctDistances(i, j) = ct_distance(i, j, ...
                 colorHistsOfSuperpixels, textureHistsOfSuperpixels);
         end
         

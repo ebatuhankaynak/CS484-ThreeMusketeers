@@ -18,67 +18,30 @@ ctDistances = ct_dists(img, labels);
 graphDistanceMatrix = neighborhoodGraph(labels);
 
 %Calculate the edge distance (d[e]) between each superpixel
-% edgeDistanceMatrix, commonBorderMatrix  = edge_costs(img, labels);
+[edgeDistanceMatrix, commonBorderMatrix]  = edge_costs(img, labels);
 
 m = 1; n = 2;
+[Dmin, Dmax, Dg, De] = calc_basic_distances(superpixelSets, ...
+    ctDistances, graphDistanceMatrix, edgeDistanceMatrix, commonBorderMatrix);
 %Find dct's between each superpixel in the sets S[m] and S[n]
 
-%Get superpixels from the sets
-superPixelsInSetM = superpixelSets(m, :);
-superPixelsInSetM = superPixelsInSetM(superPixelsInSetM ~= 0);
-superPixelsInSetN = superpixelSets(n, :);
-superPixelsInSetN = superPixelsInSetN(superPixelsInSetN ~= 0);
-
-basicDistances = zeros(1, length(superPixelsInSetM) * length(superPixelsInSetN));
-graphDistances = zeros(1, length(superPixelsInSetM) * length(superPixelsInSetN));
-edgeCosts = zeros(1, length(superPixelsInSetM) * length(superPixelsInSetN));
-commonBorders = zeros(1, length(superPixelsInSetM) * length(superPixelsInSetN));
-% temp = (commonBorderMatrix .* edgeDistanceMatrix);
-%Get all pairwise distances
-count = 1;
-for x = 1 : length(superPixelsInSetM)
-    for y = 1 : length(superPixelsInSetN)
-       i = superPixelsInSetM(x);
-       j = superPixelsInSetN(y);
-       basicDistances(count) = ctDistances(i, j);
-       graphDistances(count) = graphDistanceMatrix(i, j);
-%        edgeCosts(count) = temp(i, j);
-%        commonBorders(count) = commonBorderMatrix(i, j);
-       count = count + 1;
-    end
-end
-
-b = 0.4;
-
-%Calculate big D's
-Dmin = min(basicDistances);
-Dmax = max(basicDistances);
-
-Dg = min(graphDistances);
-
-% if (sum(commonBorders) ~= 0)
-%     De = sum(edgeCosts) / sum(commonBorders);
-% else
-%     De = 0;
-% end
-
-% DL = Dmax + De + Dg;
+DL = Dmax + De + Dg;
 DH = Dmin + (b * Dg);
 
 rm = 0;
 rn = 0;
-for i = 1 : length(superPixelsInSetM)
+for i = 1 : nSetM
     rm = rm + size(labels(labels == superPixelsInSetM), 1);
 end
 
-for i = 1 : length(superPixelsInSetN)
+for i = 1 : nSetN
     rn = rn + size(labels(labels == superPixelsInSetN), 1);
 end
 
 Ds = rm + rn;
 
-Tm = length(superPixelsInSetM);
-Tn = length(superPixelsInSetN);
+Tm = nSetM;
+Tn = nSetN;
 T = nLabels;
 
 alpha = -log2((Tm + Tn) / T);
@@ -90,5 +53,7 @@ ro = 1 / (1 + exp((-(alpha - lambda) / sigma)));
 
 Dtotal = (ro * DL) + ((1 - ro) * DH) + (nu * Ds);
 
-%WHAT IS FULL GRAPH DISTANCE??
-%WE ASSUMED GRAPH HAS 1 WEIGHT ON NEIGHUBR?NG SUPERPIXELS IS THIS DO?R?DUR
+allDtotals = Dtotal;
+
+% %WHAT IS FULL GRAPH DISTANCE??
+% %WE ASSUMED GRAPH HAS 1 WEIGHT ON NEIGHUBR?NG SUPERPIXELS IS THIS DO?R?DUR
