@@ -24,7 +24,7 @@ for i = 1 : nLabels
 end
 
 %Compute the distance of color and texture histograms between superpixel
-%sets S[i] and S[j] (inefficient xD)
+%sets S[i] and S[j]
 for i = 1 : nLabels
     for j = 1 : nLabels
         if (i == j)
