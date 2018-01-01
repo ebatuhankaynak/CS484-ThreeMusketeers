@@ -25,6 +25,7 @@ m = 1; n = 2;
     ctDistances, graphDistanceMatrix, edgeDistanceMatrix, commonBorderMatrix);
 %Find dct's between each superpixel in the sets S[m] and S[n]
 
+
 DL = Dmax + De + Dg;
 DH = Dmin + (b * Dg);
 
