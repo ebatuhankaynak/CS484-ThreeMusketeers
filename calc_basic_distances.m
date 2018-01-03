@@ -32,8 +32,6 @@ for x = 1 : nSetM
     end
 end
 
-b = 0.4;
-
 %Calculate big D's
 Dmin = min(basicDistances);
 Dmax = max(basicDistances);
