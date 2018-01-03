@@ -49,29 +49,14 @@ for m = 1 : nLabels
                 allDtotals(m, n) = Dtotal;
             end
         else
-%             allDtotals(m, n) = allDtotals(n, m);
+            allDtotals(m, n) = allDtotals(n, m);
         end
     end
 end
 
-actualSetLabels = zeros(width, height);
-labelCount = 1;
-firstColOfSets = superpixelSets(:, 1);
-for i = 1 : nLabels
-    if (firstColOfSets(i) ~= 0)
-        row = superpixelSets(i, :);
-        row = row(row ~= 0);
-        for j = 1 : length(row)
-            actualSetLabels(labels == row(j)) = labelCount;
-        end
-        labelCount = labelCount + 1;
-    end
-end
+actualSetLabels = calc_set_labels(superpixelSets, labels);
 
 figure; imshow(label2rgb(actualSetLabels));
-
-%Visualization
-%Merging
 
 %WHAT IS FULL GRAPH DISTANCE??
 %WE ASSUMED GRAPH HAS 1 WEIGHT ON NEIGHUBR?NG SUPERPIXELS IS THIS DO?R?DUR

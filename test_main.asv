@@ -34,8 +34,8 @@ for m = 1 : nLabels
                 %Calculate basic distances between the sets S[i] and S[j]
                 [Dmin, Dmax, Dg, De, Ds, nSetM, nSetN] = ...
                     calc_basic_distances(m, n, superpixelSets, ctDistances, ...
-                    graphDistanceMatrix, edgeDistanceMatrix, ...
-                    labels, commonBorderMatrix, spSizes);
+                    graphDistanceMatrix, edgeDistanceMatrix,...
+                    commonBorderMatrix, spSizes);
                 
                 b = 0.4;
                 
@@ -49,12 +49,12 @@ for m = 1 : nLabels
                 allDtotals(m, n) = Dtotal;
             end
         else
-%             allDtotals(m, n) = allDtotals(n, m);
+            allDtotals(m, n) = allDtotals(n, m);
         end
     end
 end
 
-actualSetLabels = zeros(nLabels, nLabels);
+actualSetLabels = zeros(width, height);
 labelCount = 1;
 firstColOfSets = superpixelSets(:, 1);
 for i = 1 : nLabels
@@ -62,13 +62,14 @@ for i = 1 : nLabels
         row = superpixelSets(i, :);
         row = row(row ~= 0);
         for j = 1 : length(row)
-            actualSetLabels(labels == j) = labelCount;
+            setLabeledSuperPixel = (labels == row(j)) .* labelCount; 
+            actualSetLabels
         end
         labelCount = labelCount + 1;
     end
 end
 
-figure; imshow();
+figure; imshow(label2rgb(actualSetLabels));
 
 %Visualization
 %Merging
