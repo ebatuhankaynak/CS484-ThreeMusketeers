@@ -25,7 +25,7 @@ for i = 1 : nLabels
     spSizes(i) = size(labels(labels == i), 1);
 end
 
-n_iters = 10;
+n_iters = 50;
 allDtotals = zeros(nLabels, nLabels) + Inf;
 for i = 1:n_iters
     for m = 1 : nLabels
@@ -71,26 +71,9 @@ for i = 1:n_iters
      allDtotals(col_indices(row_index), :) = Inf;
      allDtotals(:, col_indices(row_index)) = Inf;
 end
-actualSetLabels = zeros(width, height);
-labelCount = 1;
-firstColOfSets = superpixelSets(:, 1);
-for i = 1 : nLabels
-    if (firstColOfSets(i) ~= 0)
-        row = superpixelSets(i, :);
-        row = row(row ~= 0);
-        for j = 1 : length(row)
-            actualSetLabels(labels == row(j)) = labelCount;
-        end
-        labelCount = labelCount + 1;
-    end
-end
+actualSetLabels = calc_set_labels(superpixelSets, labels);
 
 figure; imshow(label2rgb(actualSetLabels));
-
-%Visualization
-%Merging
-
-
 %WHAT IS FULL GRAPH DISTANCE??
 %WE ASSUMED GRAPH HAS 1 WEIGHT ON NEIGHUBR?NG SUPERPIXELS IS THIS DO?R?DUR
 %HOW TO MERGE HOJAM

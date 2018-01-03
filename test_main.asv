@@ -25,6 +25,7 @@ for i = 1 : nLabels
     spSizes(i) = size(labels(labels == i), 1);
 end
 
+<<<<<<< HEAD
 n_iters = 10;
 allDtotals = zeros(nLabels, nLabels) + Inf;
 for i = 1:n_iters
@@ -57,6 +58,33 @@ for i = 1:n_iters
             else
                  allDtotals(m, n) = allDtotals(n, m);
             end
+=======
+allDtotals = zeros(nLabels, nLabels);
+for m = 1 : nLabels
+    for n = 1 : nLabels
+        firstColOfSets = superpixelSets(:, 1);
+        if (allDtotals(n, m) == 0)
+            if(m ~= n && firstColOfSets(m) ~= 0 && firstColOfSets(n) ~= 0)
+                %Calculate basic distances between the sets S[i] and S[j]
+                [Dmin, Dmax, Dg, De, Ds, nSetM, nSetN] = ...
+                    calc_basic_distances(m, n, superpixelSets, ctDistances, ...
+                    graphDistanceMatrix, edgeDistanceMatrix,...
+                    commonBorderMatrix, spSizes);
+                
+                b = 0.4;
+                
+                DL = Dmax + De + Dg;
+                DH = Dmin + (b * Dg);
+
+                ro = calc_ro(nSetM, nSetN, nLabels);
+                nu = 2;
+                
+                Dtotal = (ro * DL) + ((1 - ro) * DH) + (nu * Ds);
+                allDtotals(m, n) = Dtotal;
+            end
+        else
+            allDtotals(m, n) = allDtotals(n, m);
+>>>>>>> 91a0418e912bdcfd622456a7b98e763a71d7ca16
         end
     end
      [min_row,col_indices] = min(allDtotals,[],2);
@@ -74,6 +102,10 @@ for i = 1:n_iters
 %      end
      
 end
+<<<<<<< HEAD
+=======
+
+>>>>>>> 91a0418e912bdcfd622456a7b98e763a71d7ca16
 actualSetLabels = zeros(width, height);
 labelCount = 1;
 firstColOfSets = superpixelSets(:, 1);
@@ -82,7 +114,12 @@ for i = 1 : nLabels
         row = superpixelSets(i, :);
         row = row(row ~= 0);
         for j = 1 : length(row)
+<<<<<<< HEAD
             actualSetLabels(labels == row(j)) = labelCount;
+=======
+            setLabeledSuperPixel = (labels == row(j)) .* labelCount; 
+            actualSetLabels
+>>>>>>> 91a0418e912bdcfd622456a7b98e763a71d7ca16
         end
         labelCount = labelCount + 1;
     end
