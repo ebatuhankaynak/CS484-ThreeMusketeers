@@ -1,6 +1,6 @@
-function [Dmin, Dmax, Dg, De] = calc_basic_distances(superpixelSets, ...
-    ctDistances, graphDistanceMatrix, edgeDistanceMatrix, commonBorderMatrix)
-m = 1; n = 2;
+function [Dmin, Dmax, Dg, De, Ds, nSetM, nSetN] = ...
+    calc_basic_distances(m, n, superpixelSets, ctDistances, ...
+    graphDistanceMatrix, edgeDistanceMatrix, commonBorderMatrix, spSizes)
 %Find dct's between each superpixel in the sets S[m] and S[n]
 
 %Get superpixels from the sets
@@ -46,4 +46,17 @@ else
     De = 0;
 end
 
+rm = 0;
+rn = 0;
+for i = 1 : nSetM
+%     rm = rm + size(labels(labels == superPixelsInSetM(i)), 1);
+    rm = rm + spSizes(superPixelsInSetM(i));
+end
+
+for i = 1 : nSetN
+%     rn = rn + size(labels(labels == superPixelsInSetN(i)), 1);
+    rn = rn + spSizes(superPixelsInSetM(i));
+end
+
+Ds = rm + rn;
 end

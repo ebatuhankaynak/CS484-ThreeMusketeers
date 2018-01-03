@@ -20,41 +20,60 @@ graphDistanceMatrix = neighborhoodGraph(labels);
 %Calculate the edge distance (d[e]) between each superpixel
 [edgeDistanceMatrix, commonBorderMatrix]  = edge_costs(img, labels);
 
-m = 1; n = 2;
-[Dmin, Dmax, Dg, De] = calc_basic_distances(superpixelSets, ...
-    ctDistances, graphDistanceMatrix, edgeDistanceMatrix, commonBorderMatrix);
-%Find dct's between each superpixel in the sets S[m] and S[n]
-
-
-DL = Dmax + De + Dg;
-DH = Dmin + (b * Dg);
-
-rm = 0;
-rn = 0;
-for i = 1 : nSetM
-    rm = rm + size(labels(labels == superPixelsInSetM), 1);
+spSizes = zeros(1, nLabels);
+for i = 1 : nLabels
+    spSizes(i) = size(labels(labels == i), 1);
 end
 
-for i = 1 : nSetN
-    rn = rn + size(labels(labels == superPixelsInSetN), 1);
+allDtotals = zeros(nLabels, nLabels);
+for m = 1 : nLabels
+    for n = 1 : nLabels
+        firstColOfSets = superpixelSets(:, 1);
+        if (allDtotals(n, m) == 0)
+            if(m ~= n && firstColOfSets(m) ~= 0 && firstColOfSets(n) ~= 0)
+                %Calculate basic distances between the sets S[i] and S[j]
+                [Dmin, Dmax, Dg, De, Ds, nSetM, nSetN] = ...
+                    calc_basic_distances(m, n, superpixelSets, ctDistances, ...
+                    graphDistanceMatrix, edgeDistanceMatrix,...
+                    commonBorderMatrix, spSizes);
+                
+                b = 0.4;
+                
+                DL = Dmax + De + Dg;
+                DH = Dmin + (b * Dg);
+
+                ro = calc_ro(nSetM, nSetN, nLabels);
+                nu = 2;
+                
+                Dtotal = (ro * DL) + ((1 - ro) * DH) + (nu * Ds);
+                allDtotals(m, n) = Dtotal;
+            end
+        else
+%             allDtotals(m, n) = allDtotals(n, m);
+        end
+    end
 end
 
-Ds = rm + rn;
+actualSetLabels = zeros(width, height);
+labelCount = 1;
+firstColOfSets = superpixelSets(:, 1);
+for i = 1 : nLabels
+    if (firstColOfSets(i) ~= 0)
+        row = superpixelSets(i, :);
+        row = row(row ~= 0);
+        for j = 1 : length(row)
+            actualSetLabels(labels == row(j)) = labelCount;
+        end
+        labelCount = labelCount + 1;
+    end
+end
 
-Tm = nSetM;
-Tn = nSetN;
-T = nLabels;
+figure; imshow(label2rgb(actualSetLabels));
 
-alpha = -log2((Tm + Tn) / T);
-lambda = 6;
-nu = 2;
-sigma = 0.1;
-k = 1;
-ro = 1 / (1 + exp((-(alpha - lambda) / sigma)));
+%Visualization
+%Merging
 
-Dtotal = (ro * DL) + ((1 - ro) * DH) + (nu * Ds);
-
-allDtotals = Dtotal;
-
-% %WHAT IS FULL GRAPH DISTANCE??
-% %WE ASSUMED GRAPH HAS 1 WEIGHT ON NEIGHUBR?NG SUPERPIXELS IS THIS DO?R?DUR
+%WHAT IS FULL GRAPH DISTANCE??
+%WE ASSUMED GRAPH HAS 1 WEIGHT ON NEIGHUBR?NG SUPERPIXELS IS THIS DO?R?DUR
+%HOW TO MERGE HOJAM
+%SHOULD WE CONNECT SLIC AND STUFF
