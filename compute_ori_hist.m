@@ -1,12 +1,22 @@
 function oriHist = compute_ori_hist(indexed)
 TEXTURE_BIN_COUNT = 10;
 %Set gaussian parameters
-windowSize = 50;
-sigma = 2;
+windowSize = 30;
+sigma = 8;
 
 %Create gaussian filter
-f = fspecial('gaussian', [windowSize windowSize], sigma);
-[Gx, Gy] = gradient(f);
+% f = fspecial('gaussian', [windowSize windowSize], sigma);
+% [Gx, Gy] = gradient(f);
+
+floorW = floor(windowSize/2);
+[X, Y] = meshgrid(-floorW : floorW, -floorW : floorW); %?U INTERNET
+gaussian = (exp(-(X.^2 + Y.^2) / (2 * (sigma^2)))) ...
+            / (2 * pi * (2 * (sigma^2)));
+        
+%?U 3Ü ?NTERNETTEN COPY PASTE
+G_norm = gaussian / sum(gaussian(:));
+Gx = -X.*G_norm/(sigma^2);
+Gy = -Y.*G_norm/(sigma^2);
 
 %Create angles for different orientations
 theta = 0:45:315;
