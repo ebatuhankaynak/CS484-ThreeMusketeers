@@ -53,8 +53,8 @@ end
 
 for i = 1 : nSetN
 %     rn = rn + size(labels(labels == superPixelsInSetN(i)), 1);
-    rn = rn + spSizes(superPixelsInSetM(i));
+    rn = rn + spSizes(superPixelsInSetN(i));
 end
 
-Ds = rm + rn;
+Ds = (rm + rn) / sum(spSizes);
 end

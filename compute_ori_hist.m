@@ -1,7 +1,7 @@
 function oriHist = compute_ori_hist(indexed)
 TEXTURE_BIN_COUNT = 10;
 %Set gaussian parameters
-windowSize = 3;
+windowSize = 50;
 sigma = 2;
 
 %Create gaussian filter
