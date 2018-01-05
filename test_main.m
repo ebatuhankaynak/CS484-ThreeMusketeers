@@ -6,7 +6,7 @@ slicImg = rgb2gray(slicImg);
 
 [height, width, ~] = size(img);
 
-%Read precomputed SLIC0 .dat file
+%Read precomputed SLIC .dat file
 labels = read_slic('corgi.dat', height, width);
 nLabels = size(unique(labels), 1);
 
@@ -23,56 +23,47 @@ graphDistanceMatrix = neighborhoodGraph(labels);
 
 %Calculate the edge distance (d[e]) between each superpixel
 [edgeDistanceMatrix, commonBorderMatrix]  = edge_costs(img, labels);
-
+importintArguman = (commonBorderMatrix .* edgeDistanceMatrix);
 spSizes = zeros(1, nLabels);
 for i = 1 : nLabels
     spSizes(i) = size(labels(labels == i), 1);
 end
 
-n_iters = 100;
+%GER ?EY? YAPTIK AMAN EFF?C?ENCYY LAZIM OLDU(YAZAMADIM DA) O ZAMAN SADACE
+%B?R ÖNCEK? ?TERAT?ONDA ELEMAN EKLNEN SUPERSETIN ROW VE COLUMNUNU
+%UPDATELER(TEKRAR HESAPLAYARAK), GER?S? AYNI ZATEN NO NEED TO RECALCULATE.
+allDtotals = zeros(nLabels, nLabels) + Inf;
+lastMergedSpset = 0;
+n_iters = 150;
 for i = 1:n_iters
-    allDtotals = zeros(nLabels, nLabels) + Inf;
     for m = 1 : nLabels
         for n = 1 : nLabels
             firstColOfSets = superpixelSets(:, 1);
-            if (allDtotals(n, m) == Inf)
-                if(m ~= n && firstColOfSets(m) ~= 0 && firstColOfSets(n) ~= 0)
-                    if(i == 68 && m == 171 && n == 174)
-                       a = 5; 
-                    end
-
-                    %Calculate basic distances between the sets S[i] and S[j]
-                    % Ds d???ndaki ?eyleri loopdan ç?kar?p table a koyup sadece
-                    % minimumlar?n? bulabiliriz belki
+            if(m ~= n && firstColOfSets(m) ~= 0 && firstColOfSets(n) ~= 0)
+                if(i == 1 || m == lastMergedSpset)
                     [Dmin, Dmax, Dg, De, Ds, nSetM, nSetN] = ...
                         calc_basic_distances(m, n, superpixelSets, ctDistances, ...
-                        graphDistanceMatrix, edgeDistanceMatrix,...
+                        graphDistanceMatrix, importintArguman,...
                         commonBorderMatrix, spSizes);
                     
-                    b = 1;
+                    b = 0.4;
                     % Calculate DL and DH for low and high complexity
                     DL = Dmax + De + Dg;
                     DH = Dmin + (b * Dg);
                     
                     ro = calc_ro(nSetM, nSetN, nLabels);
-                    nu = 20;
+                    nu = 30;
                     
                     Dtotal = (ro * DL) + ((1 - ro) * DH) + (nu * Ds);
                     allDtotals(m, n) = Dtotal;
+                    allDtotals(n, m) = allDtotals(m, n);
                 end
-            else
-                allDtotals(m, n) = allDtotals(n, m);
             end
         end
     end
-    
-    
-    
+    %INF CAN BE CHANGED WITH TWO FOR'S TO SET VALID SP SETS.
     [min_row,col_indices] = min(allDtotals);
     [min_array,row_index] = min(min_row);
-    if(i == 68)
-       a = 7; 
-    end
     temp = [superpixelSets(row_index,:) superpixelSets(col_indices(row_index), :)];
     temp = temp(temp ~=0);
     zeroMat = zeros(1,nLabels - length(temp));
@@ -82,9 +73,11 @@ for i = 1:n_iters
     allDtotals(col_indices(row_index), :) = Inf;
     allDtotals(:, col_indices(row_index)) = Inf;
     
+    lastMergedSpset = row_index;
+    
     slicImg = imread('corgi_SLIC.jpg');
     slicImg = rgb2gray(slicImg);
-        figure; 
+    figure;
     for l = 1 : size(superpixelSets,2)
         if (superpixelSets(row_index,l) ~= 0)
             slicImg(labels == superpixelSets(row_index,l)) = 255;
@@ -94,5 +87,4 @@ for i = 1:n_iters
     imshow(slicImg);
 end
 actualSetLabels = calc_set_labels(superpixelSets, labels);
-
 figure; imshow(label2rgb(actualSetLabels));

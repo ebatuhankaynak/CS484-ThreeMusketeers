@@ -19,14 +19,12 @@ function [edgeCostMatrix, commonBorderMatrix] = edge_costs(img, labels)
 
                 % First, calculate the common border            
                 second_sp_border = edge(second_sp,'canny');
-                %total = first_sp_border | second_sp_border;
-                total = current_sp | second_sp;
-                outer = edge(total,'canny');
-                %second_outer_border = total - first_sp_border;
-                common_border = (first_sp_border | second_sp_border) - outer;
-                %figure; imshow(total);
-
-                %figure; imshow(common_border);
+                total = first_sp_border | second_sp_border;
+%                 total = current_sp | second_sp;
+%                 outer = edge(total,'canny');
+                second_outer_border = total - first_sp_border;
+%                 common_border = (first_sp_border | second_sp_border) - outer;
+                common_border = second_sp_border - second_outer_border;
                 commonBorderMatrix(i,k) = sum(sum(common_border));
                 commonBorderMatrix(k,i) = commonBorderMatrix(i,k);
 

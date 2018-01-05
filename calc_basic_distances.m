@@ -1,6 +1,6 @@
 function [Dmin, Dmax, Dg, De, Ds, nSetM, nSetN] = ...
     calc_basic_distances(m, n, superpixelSets, ctDistances, ...
-    graphDistanceMatrix, edgeDistanceMatrix, commonBorderMatrix, spSizes)
+    graphDistanceMatrix, importintArguman, commonBorderMatrix, spSizes)
 %Find dct's between each superpixel in the sets S[m] and S[n]
 
 %Get superpixels from the sets
@@ -17,7 +17,6 @@ graphDistances = zeros(1, nSetM * nSetN);
 edgeCosts = zeros(1, nSetM * nSetN);
 commonBorders = zeros(1, nSetM * nSetN);
 
-temp = (commonBorderMatrix .* edgeDistanceMatrix);
 %Get all pairwise distances
 count = 1;
 for x = 1 : nSetM
@@ -26,7 +25,7 @@ for x = 1 : nSetM
        j = superPixelsInSetN(y);
        basicDistances(count) = ctDistances(i, j);
        graphDistances(count) = graphDistanceMatrix(i, j);
-       edgeCosts(count) = temp(i, j);
+       edgeCosts(count) = importintArguman(i, j);
        commonBorders(count) = commonBorderMatrix(i, j);
        count = count + 1;
     end
