@@ -28,11 +28,11 @@ spSizes = zeros(1, nLabels);
 for i = 1 : nLabels
     spSizes(i) = size(labels(labels == i), 1);
 end
-
+invalid = NaN;
 %GER ?EY? YAPTIK AMAN EFF?C?ENCYY LAZIM OLDU(YAZAMADIM DA) O ZAMAN SADACE
 %B?R ÖNCEK? ?TERAT?ONDA ELEMAN EKLNEN SUPERSETIN ROW VE COLUMNUNU
 %UPDATELER(TEKRAR HESAPLAYARAK), GER?S? AYNI ZATEN NO NEED TO RECALCULATE.
-allDtotals = zeros(nLabels, nLabels) + Inf;
+allDtotals = zeros(nLabels, nLabels) + invalid;
 lastMergedSpset = 0;
 n_iters = 150;
 for i = 1:n_iters
@@ -45,14 +45,13 @@ for i = 1:n_iters
                         calc_basic_distances(m, n, superpixelSets, ctDistances, ...
                         graphDistanceMatrix, importintArguman,...
                         commonBorderMatrix, spSizes);
-                    
                     b = 0.4;
                     % Calculate DL and DH for low and high complexity
                     DL = Dmax + De + Dg;
                     DH = Dmin + (b * Dg);
                     
                     ro = calc_ro(nSetM, nSetN, nLabels);
-                    nu = 30;
+                    nu = 2;
                     
                     Dtotal = (ro * DL) + ((1 - ro) * DH) + (nu * Ds);
                     allDtotals(m, n) = Dtotal;
@@ -70,20 +69,21 @@ for i = 1:n_iters
     superpixelSets(row_index,:) = [temp zeroMat];
     superpixelSets(col_indices(row_index), :) = zeros(1, nLabels);
     
-    allDtotals(col_indices(row_index), :) = Inf;
-    allDtotals(:, col_indices(row_index)) = Inf;
+    allDtotals(col_indices(row_index), :) = invalid;
+    allDtotals(:, col_indices(row_index)) = invalid;
     
     lastMergedSpset = row_index;
     
     slicImg = imread('corgi_SLIC.jpg');
     slicImg = rgb2gray(slicImg);
     figure;
-    for l = 1 : size(superpixelSets,2)
-        if (superpixelSets(row_index,l) ~= 0)
-            slicImg(labels == superpixelSets(row_index,l)) = 255;
+
+    for h = 1 : size(superpixelSets,2)
+        if (superpixelSets(row_index,h) ~= 0)
+            slicImg(labels == superpixelSets(row_index,h)) = 255;
+%             disp(num2str(row_index) + "-" + num2str(superpixelSets(row_index,h)))
         end
     end
-    slicImg(labels == col_indices(row_index)) = 255;
     imshow(slicImg);
 end
 actualSetLabels = calc_set_labels(superpixelSets, labels);
