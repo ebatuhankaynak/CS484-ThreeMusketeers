@@ -43,13 +43,13 @@ for i = 1:n_iters
                         calc_basic_distances(m, n, superpixelSets, ctDistances, ...
                         graphDistanceMatrix, importintArguman,...
                         commonBorderMatrix, spSizes);
-                    b = 1;
+                    b = 0.4;
                     % Calculate DL and DH for low and high complexity
                     DL = Dmax + De + Dg;
                     DH = Dmin + (b * Dg);
                     
                     ro = calc_ro(nSetM, nSetN, nLabels);
-                    nu = 16;
+                    nu = 2;
                     
                     Dtotal = (ro * DL) + ((1 - ro) * DH) + (nu * Ds);
                     allDtotals(m, n) = Dtotal;
@@ -79,13 +79,12 @@ for i = 1:n_iters
     tempImg = slicImg;
     figure;
 
-    for h = 1 : size(superpixelSets, 1)
+    for h = 1 : size(superpixelSets, 2)
         if (superpixelSets(lastMergedSpset, h) ~= 0)
-            for ch = 1 : size(tempImg, 3)
-                page = tempImg(:, :, ch);
-                page(labels == superpixelSets(lastMergedSpset, h)) = 255;
-                tempImg(:, :, ch) = page;
-            end
+%             tempImg(labels == superpixelSets(lastMergedSpset, h)) = 255;
+%             tempImg(labels == superpixelSets(lastMergedSpset, h), 1) = 255;
+%             tempImg(labels == superpixelSets(lastMergedSpset, h), 2) = 255;
+%             tempImg(labels == superpixelSets(lastMergedSpset, h), 3) = 255;
         end
     end
     imshow(tempImg);
