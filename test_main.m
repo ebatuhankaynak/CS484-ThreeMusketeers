@@ -58,37 +58,12 @@ for i = 1:n_iters
             end
         end
     end
-    %INF CAN BE CHANGED WITH TWO FOR'S TO SET VALID SP SETS.
-%     [min_row,col_indices] = min(allDtotals);
-%     [min_array,row_index] = min(min_row);
-%     temp = [superpixelSets(row_index,:) superpixelSets(col_indices(row_index), :)];
-%     temp = temp(temp ~=0);
-%     zeroMat = zeros(1,nLabels - length(temp));
-%     superpixelSets(row_index,:) = [temp zeroMat];
-%     superpixelSets(col_indices(row_index), :) = zeros(1, nLabels);
-%     
-%     allDtotals(col_indices(row_index), :) = invalid;
-%     allDtotals(:, col_indices(row_index)) = invalid;
-%     lastMergedSpset = row_index;
+    [allDtotals, superpixelSets, firstSpSetBeforeMerge, ...
+        secondSpSetBeforeMerge] = mergeSets(allDtotals, superpixelSets,...
+        nLabels);
 
-    [lastMergedSpset, allDtotals, superpixelSets] = mergeSets(...
-        allDtotals, superpixelSets, nLabels);
-    
-%     slicImg = imread('corgi_SLIC.jpg');
-%     slicImg = rgb2gray(slicImg);
-    tempImg = slicImg;
-    figure;
-
-    for h = 1 : size(superpixelSets, 1)
-        if (superpixelSets(lastMergedSpset, h) ~= 0)
-            for ch = 1 : size(tempImg, 3)
-                page = tempImg(:, :, ch);
-                page(labels == superpixelSets(lastMergedSpset, h)) = 255;
-                tempImg(:, :, ch) = page;
-            end
-        end
-    end
-    imshow(tempImg);
+    visualize(slicImg, firstSpSetBeforeMerge, secondSpSetBeforeMerge, ...
+        labels);
 end
 actualSetLabels = calc_set_labels(superpixelSets, labels);
 figure; imshow(label2rgb(actualSetLabels));

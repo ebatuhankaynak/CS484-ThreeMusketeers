@@ -2,8 +2,8 @@ function oriHist = compute_ori_hist(indexed)
 TEXTURE_BIN_COUNT = 10;
 
 %Set gaussian parameters
-windowSize = 40;
-sigma = 2;
+windowSize = 20;
+sigma = 4;
 
 %Create gaussian kernel with a given size and spread
 floorW = floor(windowSize/2);

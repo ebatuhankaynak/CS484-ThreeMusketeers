@@ -43,13 +43,13 @@ for i = 1:n_iters
                         calc_basic_distances(m, n, superpixelSets, ctDistances, ...
                         graphDistanceMatrix, importintArguman,...
                         commonBorderMatrix, spSizes);
-                    b = 0.4;
+                    b = 1;
                     % Calculate DL and DH for low and high complexity
                     DL = Dmax + De + Dg;
                     DH = Dmin + (b * Dg);
                     
                     ro = calc_ro(nSetM, nSetN, nLabels);
-                    nu = 2;
+                    nu = 16;
                     
                     Dtotal = (ro * DL) + ((1 - ro) * DH) + (nu * Ds);
                     allDtotals(m, n) = Dtotal;
@@ -58,36 +58,25 @@ for i = 1:n_iters
             end
         end
     end
-    %INF CAN BE CHANGED WITH TWO FOR'S TO SET VALID SP SETS.
-%     [min_row,col_indices] = min(allDtotals);
-%     [min_array,row_index] = min(min_row);
-%     temp = [superpixelSets(row_index,:) superpixelSets(col_indices(row_index), :)];
-%     temp = temp(temp ~=0);
-%     zeroMat = zeros(1,nLabels - length(temp));
-%     superpixelSets(row_index,:) = [temp zeroMat];
-%     superpixelSets(col_indices(row_index), :) = zeros(1, nLabels);
-%     
-%     allDtotals(col_indices(row_index), :) = invalid;
-%     allDtotals(:, col_indices(row_index)) = invalid;
-%     lastMergedSpset = row_index;
 
-    [lastMergedSpset, allDtotals, superpixelSets] = mergeSets(...
-        allDtotals, superpixelSets, nLabels);
     
-%     slicImg = imread('corgi_SLIC.jpg');
-%     slicImg = rgb2gray(slicImg);
+    [allDtotals, superpixelSets, firstSpSetBeforeMerge] = mergeSets(...
+        allDtotals, superpixelSets, nLabels);
+
     tempImg = slicImg;
     figure;
 
-    for h = 1 : size(superpixelSets, 2)
+    for h = 1 : size(superpixelSets, 1)
         if (superpixelSets(lastMergedSpset, h) ~= 0)
-%             tempImg(labels == superpixelSets(lastMergedSpset, h)) = 255;
-%             tempImg(labels == superpixelSets(lastMergedSpset, h), 1) = 255;
-%             tempImg(labels == superpixelSets(lastMergedSpset, h), 2) = 255;
-%             tempImg(labels == superpixelSets(lastMergedSpset, h), 3) = 255;
+            for ch = 1 : size(tempImg, 3)
+                page = tempImg(:, :, ch);
+                page(labels == superpixelSets(lastMergedSpset, h)) = 255;
+                tempImg(:, :, ch) = page;
+            end
         end
     end
     imshow(tempImg);
+    
 end
 actualSetLabels = calc_set_labels(superpixelSets, labels);
 figure; imshow(label2rgb(actualSetLabels));
