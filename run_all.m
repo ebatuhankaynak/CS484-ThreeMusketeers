@@ -1,4 +1,4 @@
-baseFolder = 'C:\Users\ebatu\Desktop\ImageAnalysis\Project\processedData\';
+baseFolder = 'processedData\';
 folder = strcat(baseFolder, 'original');
 fileFull = fullfile(folder, '*.jpg');
 files = dir(fileFull);

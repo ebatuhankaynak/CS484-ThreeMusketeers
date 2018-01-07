@@ -1,14 +1,4 @@
 function actualSetLabels = main(img, slicImg, labels)
-% %Read image
-% img = imread('corgi.jpg');
-% 
-% slicImg = imread('corgi_SLIC.jpg');
-% % slicImg = rgb2gray(slicImg);
-% 
-% [height, width, ~] = size(img);
-% 
-% %Read precomputed SLIC .dat file
-% labels = read_slic('corgi.dat', height, width);
 nLabels = size(unique(labels), 1);
 
 %Initialize superpixel sets
