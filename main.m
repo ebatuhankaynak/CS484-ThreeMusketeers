@@ -67,5 +67,5 @@ for i = 1:n_iters
 %         labels);
 end
 actualSetLabels = calc_set_labels(superpixelSets, labels);
-figure; imshow(label2rgb(actualSetLabels));
+% figure; imshow(label2rgb(actualSetLabels));
 end
