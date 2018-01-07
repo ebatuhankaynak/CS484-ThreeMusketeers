@@ -1,6 +1,4 @@
 function ctDistances = ct_dists(img, labels)
-% img = rgb2lab(img);
-
 %Get image bands
 red = img(:,:,1);
 green = img(:,:,2);

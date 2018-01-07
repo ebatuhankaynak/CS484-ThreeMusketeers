@@ -1,13 +1,12 @@
 %Read image
-img = imread('corgi.jpg');
+img = imread('000215.jpg');
 
-slicImg = imread('corgi_SLIC.jpg');
-% slicImg = rgb2gray(slicImg);
+slicImg = imread('000215_SLIC.jpg');
 
 [height, width, ~] = size(img);
 
 %Read precomputed SLIC .dat file
-labels = read_slic('corgi.dat', height, width);
+labels = read_slic('000215.dat', height, width);
 nLabels = size(unique(labels), 1);
 
 %Initialize superpixel sets
@@ -31,6 +30,8 @@ end
 invalid = NaN;
 
 allDtotals = zeros(nLabels, nLabels) + invalid;
+DMIN = zeros(nLabels, nLabels) + invalid;
+
 lastMergedSpset = 0;
 n_iters = nLabels - 20;
 for i = 1:n_iters
@@ -43,11 +44,11 @@ for i = 1:n_iters
                         calc_basic_distances(m, n, superpixelSets, ctDistances, ...
                         graphDistanceMatrix, importintArguman,...
                         commonBorderMatrix, spSizes);
-                    b = 1;
+                    b = 0.4;
                     % Calculate DL and DH for low and high complexity
                     DL = Dmax + De + Dg;
                     DH = Dmin + (b * Dg);
-                    
+                    DMIN(m, n) = Dmin;
                     ro = calc_ro(nSetM, nSetN, nLabels);
                     nu = 16;
                     
@@ -58,10 +59,13 @@ for i = 1:n_iters
             end
         end
     end
-    [allDtotals, superpixelSets, firstSpSetBeforeMerge, ...
-        secondSpSetBeforeMerge] = mergeSets(allDtotals, superpixelSets,...
+%     [allDtotals, superpixelSets, firstSpSetBeforeMerge, ...
+%         secondSpSetBeforeMerge] = mergeSets(allDtotals, superpixelSets,...
+%         nLabels);
+    [DMIN, superpixelSets, firstSpSetBeforeMerge, ...
+        secondSpSetBeforeMerge] = mergeSets(DMIN, superpixelSets,...
         nLabels);
-
+    
     visualize(slicImg, firstSpSetBeforeMerge, secondSpSetBeforeMerge, ...
         labels);
 end

@@ -46,7 +46,7 @@ fclose('all');
 
 fileID = fopen(strcat(baseFolder, 'results.txt'), 'a');
     fprintf(fileID,'%6s %12s %6s\n', 'ImageNum', 'Precision', 'Recall');
-for i = 1 : size(files, 1)
+for i = 105 : size(files, 1)
     setLabels = main(images{i}, slicImages{i}, labels{i});
     fig = figure;
     %imshow(label2rgb(setLabels));
