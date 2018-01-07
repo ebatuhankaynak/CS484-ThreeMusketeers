@@ -22,8 +22,10 @@ end
 invalid = NaN;
 
 allDtotals = zeros(nLabels, nLabels) + invalid;
+Dmax_matrix = zeros(nLabels, nLabels) + invalid;
+
 lastMergedSpset = 0;
-n_iters = nLabels - 20;
+n_iters = nLabels - 5;
 for i = 1:n_iters
     for m = 1 : nLabels
         for n = 1 : nLabels
@@ -41,7 +43,7 @@ for i = 1:n_iters
                     
                     ro = calc_ro(nSetM, nSetN, nLabels);
                     nu = 16;
-                    
+                    Dmax_matrix(m,n) = Dmax;
                     Dtotal = (ro * DL) + ((1 - ro) * DH) + (nu * Ds);
                     allDtotals(m, n) = Dtotal;
                     allDtotals(n, m) = allDtotals(m, n);
@@ -49,10 +51,12 @@ for i = 1:n_iters
             end
         end
     end
+%     [allDtotals, superpixelSets, firstSpSetBeforeMerge, ...
+%         secondSpSetBeforeMerge] = mergeSets(allDtotals, superpixelSets,...
+%         nLabels);
     [allDtotals, superpixelSets, firstSpSetBeforeMerge, ...
         secondSpSetBeforeMerge] = mergeSets(allDtotals, superpixelSets,...
         nLabels);
-
 %     visualize(slicImg, firstSpSetBeforeMerge, secondSpSetBeforeMerge, ...
 %         labels);
 end

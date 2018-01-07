@@ -1,18 +1,18 @@
-function draw_boundari_boxes(img, detected_windows, reference_windows)
+function draw_boundary_boxes(img, detected_windows, reference_windows)
     detected_color = 'r';
     reference_color = 'g';
-    figure; imshow(img); hold on;
+    hold on; imshow(img);
     
     % Draw detected boxes
     for i = 1:size(detected_windows)
-        [x1,y1,x2,y2] = detected_windows(i,:);
-        rectangle('Position',[x1, y2, x2-x1, y2-y1],'EdgeColor',detected_color);
+        pts = detected_windows(i,:);
+        rectangle('Position',[pts(1), pts(2), pts(3)-pts(1), pts(4)-pts(2)],'EdgeColor',detected_color);
     end
     
-    % Draw reference boxes
+    % Draw reference boxess
     for i = 1:size(reference_windows)
-        [x1,y1,x2,y2] = reference_windows(i,:);
-        rectangle('Position',[x1, y2, x2-x1, y2-y1],'EdgeColor',reference_color);
+        pts = reference_windows(i,:);
+        rectangle('Position',[pts(1), pts(2), pts(3)-pts(1), pts(4)-pts(2)],'EdgeColor',reference_color);
     end
     % Might save image also
     hold off;

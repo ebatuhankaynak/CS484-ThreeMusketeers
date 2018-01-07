@@ -49,9 +49,11 @@ fileID = fopen(strcat(baseFolder, 'results.txt'), 'a');
 for i = 1 : size(files, 1)
     setLabels = main(images{i}, slicImages{i}, labels{i});
     fig = figure;
-    imshow(label2rgb(setLabels));
+    %imshow(label2rgb(setLabels));
+    %hold on; imshow(images{i});
+    draw_boundary_boxes(images{i},detect_objects(setLabels), texts{i});
     saveas(fig, strcat(baseFolder, 'results\',...
-        extractBefore(files(i).name, '.txt'), '.png'));
+       extractBefore(files(i).name, '.txt'), '.png'));
     [precision, recall] = evaluate(detect_objects(setLabels), texts{i});
     fprintf(fileID,'%6.2f %12.8f %6.2f\r\n', [i; precision; recall]);
 end
