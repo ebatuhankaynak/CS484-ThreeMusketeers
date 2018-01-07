@@ -1,0 +1,24 @@
+function visualize(slicImg, firstSpSetBeforeMerge, secondSpSetBeforeMerge, ...
+    labels)
+tempImg = slicImg;
+fig = figure;
+
+for ch = 1 : size(tempImg, 3)
+    page = slicImg(:, :, ch);
+    for h = 1 : size(firstSpSetBeforeMerge, 2)
+        page(labels == firstSpSetBeforeMerge(h)) = 255;
+    end
+    tempImg(:, :, ch) = page;
+end
+% imshow(tempImg);
+for ch = 1 : size(tempImg, 3)
+    page = tempImg(:, :, ch);
+    for h = 1 : size(secondSpSetBeforeMerge, 2)
+        page(labels == secondSpSetBeforeMerge(h)) = 0;
+    end
+    tempImg(:, :, ch) = page;
+end
+imshow(tempImg);
+saveas(fig, strcat(baseFolder, 'visual\',...
+        extractBefore(files(i).name, '.txt'), '.png'));
+end
