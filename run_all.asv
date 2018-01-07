@@ -20,6 +20,7 @@ for i = 1 : nfiles
     currentSlic = imread(fullFileName);
     slicImages{i} = currentSlic;
 end
+fclose('all');
 folder = strcat(baseFolder, 'dat');
 fileFull = fullfile(folder, '*.dat');
 files = dir(fileFull);
@@ -38,8 +39,20 @@ texts = cell(1, nfiles);
 for i = 1 : nfiles
     currentfilename = files(i).name;
     fullFileName = fullfile(folder, currentfilename);
-    currentText = read_da(fullFileName);
+    currentText = read_data(fullFileName);
     texts{i} = currentText;
 end
+fclose('all');
 
-main(images{1}, slicImages{1}, labels{1});
+for i = 1 : size(files, 1)
+    setLabels = main(images{i}, slicImages{i}, labels{i});
+    fig = figure;
+    imshow(label2rgb(actualSetLabels));
+    saveas(fig, strcat(folderName, '/', num2str(files(imgNum).name)));
+    
+    [precision, recall] = evaluate(detect_objects(setLabels), texts{i});
+    fileID = fopen('pr.txt','w');
+    fprintf(fileID,'%6s %12s\n','precision','recall');
+    fprintf(fileID,'%6.2f %12.8f\r\n', [i; precision; recall]);
+    fclose(fileID);
+end

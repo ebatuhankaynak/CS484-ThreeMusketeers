@@ -63,8 +63,8 @@ for i = 1:n_iters
         secondSpSetBeforeMerge] = mergeSets(allDtotals, superpixelSets,...
         nLabels);
 
-    visualize(slicImg, firstSpSetBeforeMerge, secondSpSetBeforeMerge, ...
-        labels);
+%     visualize(slicImg, firstSpSetBeforeMerge, secondSpSetBeforeMerge, ...
+%         labels);
 end
 actualSetLabels = calc_set_labels(superpixelSets, labels);
 figure; imshow(label2rgb(actualSetLabels));

@@ -4,8 +4,8 @@ function [precision, recall] = evaluate(detected_windows, reference_windows)
     % detected objects. If IoU is greater than 0.5, the detection is 
     % considered correct.
     
-    n_detected = size(detected_windows, 2); %?
-    n_objects = size(reference_windows, 2);
+    n_detected = size(detected_windows, 1);
+    n_objects = size(reference_windows, 1);
     n_correctly_detected = 0;
     
     iou_matrix = zeros(n_detected, n_objects);

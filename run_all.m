@@ -44,8 +44,15 @@ for i = 1 : nfiles
 end
 fclose('all');
 
+fileID = fopen(strcat(baseFolder, 'results.txt'), 'a');
+    fprintf(fileID,'%6s %12s %6s\n', 'ImageNum', 'Precision', 'Recall');
 for i = 1 : size(files, 1)
     setLabels = main(images{i}, slicImages{i}, labels{i});
-    evaluate(detected_windows, texts{i})
-    evaluate(setLabels);
+    fig = figure;
+    imshow(label2rgb(setLabels));
+    saveas(fig, strcat(baseFolder, 'results\',...
+        extractBefore(files(i).name, '.txt'), '.png'));
+    [precision, recall] = evaluate(detect_objects(setLabels), texts{i});
+    fprintf(fileID,'%6.2f %12.8f %6.2f\r\n', [i; precision; recall]);
 end
+fclose(fileID);
