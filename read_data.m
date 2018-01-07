@@ -1,7 +1,8 @@
-fileID = fopen('000012.txt','r');
+function positionList = read_data(txtName)
+fileID = fopen(txtName,'r');
 formatSpec = '%d';
-sizeA = [4 4]; % change this
-A = fscanf(fileID, formatSpec, sizeA);
-A = A';
-A(end,:) = [];
-A
+sizePositionList = [4 Inf]; % change this
+positionList = fscanf(fileID, formatSpec, sizePositionList);
+positionList = positionList';
+positionList(end,:) = [];
+end

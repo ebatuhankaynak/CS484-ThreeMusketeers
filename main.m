@@ -1,4 +1,4 @@
-function main()
+function actualSetLabels = main(img, slicImg, labels)
 % %Read image
 % img = imread('corgi.jpg');
 % 
@@ -33,7 +33,7 @@ invalid = NaN;
 
 allDtotals = zeros(nLabels, nLabels) + invalid;
 lastMergedSpset = 0;
-n_iters = 150;
+n_iters = nLabels - 20;
 for i = 1:n_iters
     for m = 1 : nLabels
         for n = 1 : nLabels
